@@ -1,5 +1,6 @@
 package com.ediberto.informes;
 
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +37,7 @@ public class ViewReportActivity extends AppCompatActivity {
     private EditText endTimeEditText;
     private Button updateButton;
     private Button downloadButton;
+    private Button deleteButton; // Agregar referencia al botón de eliminar
     private RecyclerView recyclerView;
 
     private DailyReportDatabaseHelper dbHelper;
@@ -55,6 +59,7 @@ public class ViewReportActivity extends AppCompatActivity {
         endTimeEditText = findViewById(R.id.endTimeEditText);
         updateButton = findViewById(R.id.updateButton);
         downloadButton = findViewById(R.id.downloadButton);
+        deleteButton = findViewById(R.id.deleteButton); // Inicializa el botón de eliminar
         recyclerView = findViewById(R.id.recyclerView);
 
         dbHelper = new DailyReportDatabaseHelper(this);
@@ -84,6 +89,13 @@ public class ViewReportActivity extends AppCompatActivity {
             }
         });
 
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteReport(); // Llama al método para eliminar el informe
+            }
+        });
+
         // Cargar todos los reportes al iniciar la actividad (si es necesario)
         loadAllReports();
     }
@@ -109,7 +121,7 @@ public class ViewReportActivity extends AppCompatActivity {
     private void loadReport(int reportId) {
         Cursor cursor = dbHelper.getReportById(reportId);
         if (cursor != null && cursor.moveToFirst()) {
-            dateTextView.setText(cursor.getString(cursor.getColumnIndex("date")));
+            dateTextView.setText(cursor.getString(cursor .getColumnIndex("date")));
             locationEditText.setText(cursor.getString(cursor.getColumnIndex("location")));
             descriptionEditText.setText(cursor.getString(cursor.getColumnIndex("description")));
             observationsEditText.setText(cursor.getString(cursor.getColumnIndex("observations")));
@@ -189,5 +201,36 @@ public class ViewReportActivity extends AppCompatActivity {
         } finally {
             pdfDocument.close();
         }
+    }
+
+    private void deleteReport() {
+        if (reportId == 0) {
+            Toast.makeText(this, "No hay informe seleccionado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmar Eliminación")
+                .setMessage("¿Estás seguro de que deseas eliminar este informe?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            // Eliminar el informe de la base de datos
+                            dbHelper.deleteReport(reportId);
+                            Toast.makeText(ViewReportActivity.this, "Informe eliminado", Toast.LENGTH_SHORT).show();
+
+                            // Cargar nuevamente todos los report es para reflejar los cambios
+                            loadAllReports();
+
+                            // Limpiar los campos de entrada
+                            clearInputFields();
+                        } catch (Exception e) {
+                            Toast.makeText(ViewReportActivity.this, "Error al eliminar el informe: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.e("DeleteReport", "Error al eliminar el informe: " + e.getMessage());
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
     }
 }
