@@ -1,4 +1,4 @@
-package com.ediberto.informes;
+package com.ediberto.informes.BasedeDatos;
 
 import android.content.ContentValues;
 import android.content.Context;

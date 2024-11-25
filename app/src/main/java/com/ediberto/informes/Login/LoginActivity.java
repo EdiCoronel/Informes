@@ -1,4 +1,4 @@
-package com.ediberto.informes;
+package com.ediberto.informes.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.ediberto.informes.BasedeDatos.DatabaseHelper;
+import com.ediberto.informes.Reportes.DailyReportActivity;
+import com.ediberto.informes.R;
 
 public class LoginActivity extends AppCompatActivity {
 

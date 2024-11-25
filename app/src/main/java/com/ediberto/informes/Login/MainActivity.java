@@ -1,4 +1,4 @@
-package com.ediberto.informes;
+package com.ediberto.informes.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import com.ediberto.informes.BasedeDatos.DatabaseHelper;
+import com.ediberto.informes.R;
 
 public class MainActivity extends AppCompatActivity {
     private EditText editTextName, editTextEmail, editTextPassword;
@@ -23,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("Agregar Usuarios"); // Establecer título de la Toolbar
 
         editTextName = findViewById(R.id.editTextName);
         editTextPassword = findViewById(R.id.editTextPassword);

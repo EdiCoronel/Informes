@@ -1,4 +1,4 @@
-package com.ediberto.informes;
+package com.ediberto.informes.Reportes;
 
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -21,6 +21,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
+import androidx.appcompat.widget.Toolbar;
+import android.view.MenuItem;
+
+import com.ediberto.informes.BasedeDatos.DailyReportDatabaseHelper;
+import com.ediberto.informes.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,6 +55,12 @@ public class ViewReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_report);
 
+        // Inicializa la Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar); // Configura la Toolbar como ActionBar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Habilita el botón de retroceso
+        getSupportActionBar().setTitle("Ver Informes"); // Establece el título de la Toolbar
+
         // Inicializa los elementos de la interfaz
         dateTextView = findViewById(R.id.dateTextView);
         locationEditText = findViewById(R.id.locationEditText);
@@ -70,6 +81,8 @@ public class ViewReportActivity extends AppCompatActivity {
                 reportId = report.getId(); // Guarda el ID del reporte seleccionado
                 loadReport(reportId); // Carga los detalles del reporte
             }
+
+
         });
 
         recyclerView.setAdapter(reportAdapter);
@@ -232,5 +245,15 @@ public class ViewReportActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Maneja el clic del botón de retroceso
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed(); // Vuelve a la actividad anterior
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

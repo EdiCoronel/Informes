@@ -1,4 +1,4 @@
-package com.ediberto.informes;
+package com.ediberto.informes.Login;
 
 public class User {
     private int id;

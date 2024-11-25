@@ -16,13 +16,13 @@
         android:theme="@style/Theme.Informes"
         tools:targetApi="31">
         <activity
-            android:name=".ViewReportActivity"
+            android:name=".Reportes.ViewReportActivity"
             android:exported="false" />
         <activity
-            android:name=".DailyReportActivity"
+            android:name=".Reportes.DailyReportActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".Login.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login">
             <intent-filter>
@@ -32,10 +32,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserListActivity"
+            android:name=".Login.UserListActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Login.MainActivity"
             android:exported="false" />
     </application>
 

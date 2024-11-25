@@ -1,4 +1,4 @@
-package com.ediberto.informes;
+package com.ediberto.informes.Login;
 
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +12,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 import androidx.appcompat.widget.Toolbar;
+
+import com.ediberto.informes.BasedeDatos.DatabaseHelper;
+import com.ediberto.informes.R;
 
 public class UserListActivity extends AppCompatActivity {
     private ListView listViewUsers;
@@ -30,7 +33,7 @@ public class UserListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("Ver Usuarios"); // Establecer título de la Toolbar
 
         listViewUsers = findViewById(R.id.listViewUsers);
         editTextName = findViewById(R.id.editTextName);
