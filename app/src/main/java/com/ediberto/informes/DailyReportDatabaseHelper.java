@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DailyReportDatabaseHelper extends SQLiteOpenHelper {
 
@@ -42,6 +43,19 @@ public class DailyReportDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REPORTS);
         onCreate(db);
+    }
+
+    public void deleteReport(int reportId) {
+        SQLiteDatabase db = this.getWritableDatabase(); // Abre la base de datos en modo escritura
+        try {
+            // Elimina el informe con el ID especificado
+            db.delete(TABLE_REPORTS, COLUMN_ID + " = ?", new String[]{String.valueOf(reportId)});
+        } catch (Exception e) {
+            Log.e("DBError", "Error al eliminar el informe: " + e.getMessage());
+            throw e; // Vuelve a lanzar la excepción si es necesario
+        } finally {
+            db.close(); // Asegúrate de cerrar la base de datos
+        }
     }
 
     // Método para agregar un informe diario
