@@ -1,0 +1,17 @@
+<resources>
+    <string-array name="accesslevels">
+        <item>Seleccione un nivel de acceso</item> <!-- Elemento no seleccionable -->
+        <item>Basico</item>
+        <item>Administrador</item>
+    </string-array>
+    <string name="app_name">informes</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Usuario</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Entrar</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Bienvenido !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login Errado"</string>
+</resources>
