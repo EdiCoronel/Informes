@@ -1,13 +1,19 @@
-package com.ediberto.informes;
+package com.ediberto.informes.Reportes;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.ediberto.informes.BasedeDatos.DailyReportDatabaseHelper;
+import com.ediberto.informes.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -28,6 +34,12 @@ public class DailyReportActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_report);
+
+        // Configurar la Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Habilitar el botón de retroceso
+        getSupportActionBar().setTitle("Cargar Reportes"); // Establecer título de la Toolbar
 
         dateTextView = findViewById(R.id.dateTextView);
         locationEditText = findViewById(R.id.locationEditText);
@@ -75,5 +87,15 @@ public class DailyReportActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Manejar el clic del botón de retroceso
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed(); // Volver a la actividad anterior
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -5,18 +5,29 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <TextView
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Fecha"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"/>
 
     <EditText
         android:id="@+id/locationEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Lugar y ubicación del trabajo" />
+        android:hint="Lugar y ubicación del trabajo"
+        android:layout_marginTop="16dp"/>
 
     <EditText
         android:id="@+id/descriptionEditText"
@@ -44,13 +55,15 @@
 
     <Button
         android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enviar Informe" />
+        android:text="Enviar Informe"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/viewReportButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ver Informe" />
+
 </LinearLayout>

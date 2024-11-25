@@ -1,4 +1,4 @@
-package com.ediberto.informes;
+package com.ediberto.informes.Reportes;
 
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -23,6 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.ediberto.informes.BasedeDatos.DailyReportDatabaseHelper;
+import com.ediberto.informes.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -1,4 +1,4 @@
-package com.ediberto.informes;
+package com.ediberto.informes.Reportes;
 
 public class Report {
     private int id;
