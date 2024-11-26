@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Otros colores -->
+    <color name="colorPrimary">#03989e</color> <!-- Color para el tema claro -->
+    <color name="colorPrimaryDark">#02786d</color> <!-- Color más oscuro para la barra de estado (opcional) -->
+    <color name="colorAccent">#FF4081</color> <!-- Color de acento (opcional) -->
 </resources>
