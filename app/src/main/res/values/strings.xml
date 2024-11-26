@@ -16,4 +16,15 @@
     <string name="login_failed">"Login Errado"</string>
     <string name="registrar_nuevo_usuarios">Registrar Nuevo Usuario</string>
     <string name="logo_description">Ediberto Coronel Logo</string>
+    <string name="photo_preview">foto</string>
+    <string name="seleccionar_foto">Seleccionar Foto</string>
+    <string name="tomar_foto">Tomar Foto</string>
+    <string name="ver_informe">Ver Informe</string>
+    <string name="enviar_informe">Enviar Informe</string>
+    <string name="hora_de_fin_hh_mm">Hora de fin (HH:mm)</string>
+    <string name="hora_de_inicio_hh_mm">Hora de inicio (HH:mm)</string>
+    <string name="observaciones">Observaciones</string>
+    <string name="descripci_n_de_lo_realizado">Descripción de lo realizado</string>
+    <string name="lugar_y_ubicaci_n_del_trabajo">Lugar y ubicación del trabajo</string>
+    <string name="fecha">Fecha</string>
 </resources>

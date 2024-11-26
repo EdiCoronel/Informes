@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -18,7 +17,7 @@
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fecha"
+        android:text="@string/fecha"
         android:textSize="18sp"
         android:layout_marginTop="16dp"/>
 
@@ -26,44 +25,74 @@
         android:id="@+id/locationEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Lugar y ubicación del trabajo"
-        android:layout_marginTop="16dp"/>
+        android:autofillHints="text"
+        android:hint="@string/lugar_y_ubicaci_n_del_trabajo"
+        android:layout_marginTop="16dp"
+        android:inputType="textMultiLine" />
 
     <EditText
         android:id="@+id/descriptionEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Descripción de lo realizado" />
+        android:autofillHints="text"
+        android:hint="@string/descripci_n_de_lo_realizado"
+        android:inputType="textMultiLine" />
 
     <EditText
         android:id="@+id/observationsEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Observaciones" />
+        android:autofillHints="text"
+        android:hint="@string/observaciones"
+        android:inputType="textMultiLine" />
 
     <EditText
         android:id="@+id/startTimeEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Hora de inicio (HH:mm)" />
+        android:autofillHints="text"
+        android:hint="@string/hora_de_inicio_hh_mm"
+        android:inputType="time" />
 
     <EditText
         android:id="@+id/endTimeEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Hora de fin (HH:mm)" />
+        android:autofillHints="text"
+        android:hint="@string/hora_de_fin_hh_mm"
+        android:inputType="time" />
 
     <Button
         android:id="@+id/submitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enviar Informe"
+        android:text="@string/enviar_informe"
         android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/viewReportButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ver Informe" />
+        android:text="@string/ver_informe" />
+
+    <Button
+        android:id="@+id/buttonTakePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tomar_foto" />
+
+    <Button
+        android:id="@+id/buttonSelectPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seleccionar_foto" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/photo_preview"
+        android:scaleType="centerCrop" />
 
 </LinearLayout>
