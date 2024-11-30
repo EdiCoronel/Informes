@@ -3,6 +3,8 @@ package com.ediberto.informes.Reportes;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,8 +124,14 @@ public class ViewReportActivity extends AppCompatActivity {
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
                 String reportDate = cursor.getString(cursor.getColumnIndex("date"));
                 String location = cursor.getString(cursor.getColumnIndex("location"));
+                String description = cursor.getString(cursor.getColumnIndex("description"));
+                String observations = cursor.getString(cursor.getColumnIndex("observations"));
+                String startTime = cursor.getString(cursor.getColumnIndex("start_time"));
+                String endTime = cursor.getString(cursor.getColumnIndex("end_time"));
+                byte[] imageBytes = cursor.getBlob(cursor.getColumnIndex("imageBytes")); // Asegúrate de que el nombre de la columna sea correcto
+
                 // Agregar otros campos según sea necesario
-                reportList.add(new Report(id, reportDate, location)); // Asegúrate de que el constructor de Report tenga los parámetros correctos
+                reportList.add(new Report(id, reportDate, location, description, observations, startTime, endTime, imageBytes)); // Asegúrate de que el constructor de Report tenga los parámetros correctos
             } while (cursor.moveToNext());
             cursor.close();
         } else {
@@ -134,12 +143,23 @@ public class ViewReportActivity extends AppCompatActivity {
     private void loadReport(int reportId) {
         Cursor cursor = dbHelper.getReportById(reportId);
         if (cursor != null && cursor.moveToFirst()) {
-            dateTextView.setText(cursor.getString(cursor .getColumnIndex("date")));
+            dateTextView.setText(cursor.getString(cursor.getColumnIndex("date")));
             locationEditText.setText(cursor.getString(cursor.getColumnIndex("location")));
             descriptionEditText.setText(cursor.getString(cursor.getColumnIndex("description")));
             observationsEditText.setText(cursor.getString(cursor.getColumnIndex("observations")));
             startTimeEditText.setText(cursor.getString(cursor.getColumnIndex("start_time")));
             endTimeEditText.setText(cursor.getString(cursor.getColumnIndex("end_time")));
+
+            // Obtener los bytes de la imagen
+            byte[] imageBytes = cursor.getBlob(cursor.getColumnIndex("imageBytes")); // Asegúrate de que el nombre de la columna sea correcto
+            // Aquí puedes mostrar la imagen en un ImageView
+            if (imageBytes != null && imageBytes.length > 0) {
+                // Convertir bytes a Bitmap y mostrar en un ImageView
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                // Supongamos que tienes un ImageView en tu layout para mostrar la imagen
+                ImageView imageView = findViewById(R.id.imageView);
+                imageView.setImageBitmap(bitmap);
+            }
             cursor.close();
         } else {
             Toast.makeText(this, "Informe no encontrado", Toast.LENGTH_SHORT).show();
@@ -154,8 +174,18 @@ public class ViewReportActivity extends AppCompatActivity {
         String startTime = startTimeEditText.getText().toString().trim();
         String endTime = endTimeEditText.getText().toString().trim();
 
+        // Obtener la imagen existente
+        byte[] imageBytes = dbHelper.getImageByReportId(reportId); // Obtiene la imagen actual del informe
+
+        // Si el usuario ha seleccionado una nueva imagen, debes convertirla a bytes
+        // Aquí asumo que tienes un método para obtener la nueva imagen en bytes, si es necesario
+        // byte[] newImageBytes = ...; // Lógica para obtener la nueva imagen en bytes
+
+        // Si hay una nueva imagen, puedes usarla, de lo contrario, mantén la existente
+        // imageBytes = (newImageBytes != null) ? newImageBytes : imageBytes; // Descomenta si usas una nueva imagen
+
         // Actualiza el informe en la base de datos
-        dbHelper.updateDailyReport(reportId, location, description, observations, startTime, endTime);
+        dbHelper.updateDailyReport(reportId, location, description, observations, startTime, endTime, imageBytes);
         Toast.makeText(this, "Informe actualizado", Toast.LENGTH_SHORT).show();
 
         // Carga de nuevo todos los reportes para reflejar los cambios
@@ -171,6 +201,8 @@ public class ViewReportActivity extends AppCompatActivity {
         observationsEditText.setText("");
         startTimeEditText.setText("");
         endTimeEditText.setText("");
+        ImageView imageView = findViewById(R.id.imageView);
+        imageView.setImageDrawable(null);
     }
 
     private void downloadReportAsPDF() {
@@ -186,6 +218,13 @@ public class ViewReportActivity extends AppCompatActivity {
         String startTime = startTimeEditText.getText().toString().trim();
         String endTime = endTimeEditText.getText().toString().trim();
 
+        // Obtener la imagen de la base de datos
+        byte[] imageBytes = dbHelper.getImageByReportId(reportId); // Asegúrate de que este método esté implementado
+        Bitmap bitmap = null;
+        if (imageBytes != null) {
+            bitmap = BitmapFactory.decodeByteArray(imageBytes, 0 , imageBytes.length);
+        }
+
         PdfDocument pdfDocument = new PdfDocument();
         PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(300, 600, 1).create();
         PdfDocument.Page page = pdfDocument.startPage(pageInfo);
@@ -199,6 +238,10 @@ public class ViewReportActivity extends AppCompatActivity {
         canvas.drawText("Observaciones: " + observations, 10, 100, paint);
         canvas.drawText("Hora de Inicio: " + startTime, 10, 125, paint);
         canvas.drawText("Hora de Fin: " + endTime, 10, 150, paint);
+
+        if (bitmap != null) {
+            canvas.drawBitmap(bitmap, 10, 180, paint); // Ajusta la posición según sea necesario
+        }
 
         pdfDocument.finishPage(page);
 
