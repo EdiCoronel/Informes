@@ -174,7 +174,15 @@ public class ViewReportActivity extends AppCompatActivity {
         String startTime = startTimeEditText.getText().toString().trim();
         String endTime = endTimeEditText.getText().toString().trim();
 
-        byte[] imageBytes = null;
+        // Obtener la imagen existente
+        byte[] imageBytes = dbHelper.getImageByReportId(reportId); // Obtiene la imagen actual del informe
+
+        // Si el usuario ha seleccionado una nueva imagen, debes convertirla a bytes
+        // Aquí asumo que tienes un método para obtener la nueva imagen en bytes, si es necesario
+        // byte[] newImageBytes = ...; // Lógica para obtener la nueva imagen en bytes
+
+        // Si hay una nueva imagen, puedes usarla, de lo contrario, mantén la existente
+        // imageBytes = (newImageBytes != null) ? newImageBytes : imageBytes; // Descomenta si usas una nueva imagen
 
         // Actualiza el informe en la base de datos
         dbHelper.updateDailyReport(reportId, location, description, observations, startTime, endTime, imageBytes);
