@@ -17,6 +17,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.provider.MediaStore;
 import com.ediberto.informes.BasedeDatos.DailyReportDatabaseHelper;
 import com.ediberto.informes.R;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -36,6 +40,7 @@ public class DailyReportActivity extends AppCompatActivity {
     private Button viewReportButton;
     private Button buttonSelectPhoto;
     private ImageView imageView;
+    private Uri selectedImageUri;
     private DailyReportDatabaseHelper dbHelper; // Nueva instancia de la base de datos
 
     @Override
@@ -75,9 +80,16 @@ public class DailyReportActivity extends AppCompatActivity {
                 String startTime = startTimeEditText.getText().toString().trim();
                 String endTime = endTimeEditText.getText().toString().trim();
 
-                // Agregar el informe diario a la base de datos
-                dbHelper.addDailyReport(currentDate, location, description, observations, startTime, endTime);
-                Toast.makeText(DailyReportActivity.this, "Informe diario guardado", Toast.LENGTH_SHORT).show();
+                // Asegúrate de que selectedImageUri no sea nulo
+                if (selectedImageUri != null) {
+                    // Convertir la imagen a byte array antes de guardar
+                    byte[] imageBytes = getBytesFromUri(selectedImageUri);
+
+                    // Agregar el informe diario a la base de datos
+                    dbHelper.addDailyReport(currentDate, location, description, observations, startTime, endTime, imageBytes);
+                } else {
+                    Toast.makeText(DailyReportActivity.this, "Por favor, selecciona una imagen.", Toast.LENGTH_SHORT).show();
+                }
 
                 // Limpiar los campos después de guardar
                 locationEditText.setText("");
@@ -118,7 +130,7 @@ public class DailyReportActivity extends AppCompatActivity {
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 imageView.setImageBitmap(imageBitmap);
             } else if (requestCode == PICK_IMAGE) {
-                Uri selectedImageUri = data.getData();
+                selectedImageUri = data.getData();
                 imageView.setImageURI(selectedImageUri);
             }
         }
@@ -132,5 +144,27 @@ public class DailyReportActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private byte[] getBytesFromUri(Uri uri) {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
+            if (inputStream == null) {
+                // Manejar el caso donde el InputStream es nulo
+                Toast.makeText(this, "Error al abrir la imagen.", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error al cargar la imagen.", Toast.LENGTH_SHORT).show(); // Notificar al usuario
+            return null; // Manejar el error adecuadamente
+        }
+        return byteBuffer.toByteArray();
     }
 }
