@@ -193,6 +193,8 @@ public class ViewReportActivity extends AppCompatActivity {
         observationsEditText.setText("");
         startTimeEditText.setText("");
         endTimeEditText.setText("");
+        ImageView imageView = findViewById(R.id.imageView);
+        imageView.setImageDrawable(null);
     }
 
     private void downloadReportAsPDF() {
