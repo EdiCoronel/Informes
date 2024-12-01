@@ -22,18 +22,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, password TEXT, access_level TEXT)";
+        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, " +
+                "email TEXT, " +
+                "password TEXT, " +
+                "access_level TEXT)";
         db.execSQL(CREATE_USERS_TABLE);
+
+        // Agrega un usuario administrador predeterminado
+        addDefaultAdminUser (db);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
-            db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN password TEXT"); // Agrega la columna de contraseña
+@Override
+public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    if (oldVersion < 2) {
+        db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN password TEXT"); // Agrega la columna de contraseña
+        // Verifica si hay un administrador y crea uno si no existe
+        if (getAdminCount() == 0) {
+            addDefaultAdminUser (db);
         }
     }
+}
 
-    public boolean checkUser (String name, String password) {
+    // Método para agregar un usuario administrador predeterminado
+    private void addDefaultAdminUser (SQLiteDatabase db) {
+        ContentValues adminUser  = new ContentValues();
+        adminUser .put("name", "admin");
+        adminUser .put("email", "admin@example.com");
+        adminUser .put("password", "admin123"); // Cambia esto por un hash seguro en producción
+        adminUser .put("access_level", "Administrador");
+        db.insert(TABLE_USERS, null, adminUser );
+    }
+
+    public boolean checkUser(String name, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         try (Cursor cursor = db.query(TABLE_USERS, new String[]{"id"}, "name=? AND password=?", new String[]{name, password}, null, null, null)) {
             return cursor != null && cursor.getCount() > 0;
@@ -41,22 +63,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // CRUD Operations
-    public void addUser  (User user) {
+    public void addUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", user.getName());
         values.put("email", user.getEmail());
-        values.put("password", user.getPassword()); // Agregar la contraseña a la base de datos
-        values.put("access_level", user.getAccessLevel()); // Agregar el nivel de acceso como String
+        values.put("password", user.getPassword());
+        values.put("access_level", user.getAccessLevel());
         db.insert(TABLE_USERS, null, values);
         db.close();
     }
 
-    public User getUser  (int id) {
+    public User getUser(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_USERS, new String[]{"id", "name", "email", "password", "access_level"}, "id=?", new String[]{String.valueOf(id)}, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-            User user = new User(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4)); // Obtener la contraseña y el nivel de acceso
+            User user = new User(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
             cursor.close();
             return user;
         }
@@ -66,11 +88,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_USERS;
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
             do {
-                User user = new User(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4)); // Obtener la contraseña y el nivel de acceso
+                User user = new User(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
                 userList.add(user);
             } while (cursor.moveToNext());
         }
@@ -78,20 +100,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userList;
     }
 
-    public void updateUser  (User  user) {
+    public void updateUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", user.getName());
         values.put("email", user.getEmail());
-        values.put("password", user.getPassword()); // Agregar la contraseña a la base de datos
-        values.put("access_level", user.getAccessLevel()); // Agregar el nivel de acceso como String
+        values.put("password", user.getPassword());
+        values.put("access_level", user.getAccessLevel());
         db.update(TABLE_USERS, values, "id=?", new String[]{String.valueOf(user.getId())});
         db.close();
     }
 
-    public void deleteUser  (int id) {
+    public void deleteUser(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // Verifica si el usuario es administrador
+        User user = getUser(id);
+        if (user != null && "Administrador".equals(user.getAccessLevel())) {
+            // Verifica que haya al menos otro administrador en la base de datos
+            int adminCount = getAdminCount();
+            if (adminCount <= 1) {
+                // No permite eliminar al último administrador
+                throw new IllegalStateException("No puedes eliminar el único usuario administrador.");
+            }
+        }
+
         db.delete(TABLE_USERS, "id=?", new String[]{String.valueOf(id)});
         db.close();
+    }
+
+    // Obtener el número de administradores en la base de datos
+    public int getAdminCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_USERS + " WHERE access_level = ?", new String[]{"Administrador"});
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        return count;
     }
 }

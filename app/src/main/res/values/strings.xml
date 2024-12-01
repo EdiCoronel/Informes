@@ -28,4 +28,5 @@
     <string name="lugar_y_ubicaci_n_del_trabajo">Lugar y ubicación del trabajo</string>
     <string name="fecha">Fecha</string>
     <string name="report_image">imagen del reporte</string>
+    <string name="toggle_password_visibility">ver/ocultar password</string>
 </resources>
