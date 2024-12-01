@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "users.db";
-    private static final int DATABASE_VERSION = 2; // Aumenta la versión si es necesario
+    private static final int DATABASE_VERSION = 3; // Aumenta la versión si es necesario
     private static final String TABLE_USERS = "users";
 
     public DatabaseHelper(Context context) {
@@ -46,13 +46,23 @@ public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 }
 
     // Método para agregar un usuario administrador predeterminado
-    private void addDefaultAdminUser (SQLiteDatabase db) {
-        ContentValues adminUser  = new ContentValues();
-        adminUser .put("name", "admin");
-        adminUser .put("email", "admin@example.com");
-        adminUser .put("password", "admin123"); // Cambia esto por un hash seguro en producción
-        adminUser .put("access_level", "Administrador");
-        db.insert(TABLE_USERS, null, adminUser );
+    private void addDefaultAdminUser(SQLiteDatabase db) {
+        // Verifica si ya existe un usuario con nivel de acceso 'Administrador'
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE access_level = ?",
+                new String[]{"Administrador"});
+        if (cursor.moveToFirst()) {
+            cursor.close(); // Si existe, no hacer nada
+            return;
+        }
+        cursor.close();
+
+        // Insertar el usuario administrador si no existe
+        ContentValues adminUser = new ContentValues();
+        adminUser.put("name", "admin");
+        adminUser.put("email", "admin@example.com");
+        adminUser.put("password", "admin123"); // Usa un hash seguro en producción
+        adminUser.put("access_level", "Administrador");
+        db.insert(TABLE_USERS, null, adminUser);
     }
 
     public boolean checkUser(String name, String password) {

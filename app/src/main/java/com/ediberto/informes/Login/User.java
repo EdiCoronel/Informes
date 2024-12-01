@@ -1,11 +1,13 @@
 package com.ediberto.informes.Login;
 
+import androidx.annotation.NonNull;
+
 public class User {
-    private int id;
-    private String name;
-    private String email;
-    private String password;
-    private String accessLevel;
+    private final int id;
+    private final String name;
+    private final String email;
+    private final String password;
+    private final String accessLevel;
 
     public User(int id, String name, String email, String password, String accessLevel) {
         this.id = id;
@@ -32,18 +34,11 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) { // Setter para la contraseña
-        this.password = password;
-    }
-
     public String getAccessLevel() {
         return accessLevel;
     }
 
-    public void setAccessLevel(String accessLevel) {
-        this.accessLevel = accessLevel;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         return name + " (" + email + ", Nivel de acceso: " + accessLevel + ")";

@@ -49,16 +49,16 @@ public class DailyReportDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteReport(int reportId) {
-        SQLiteDatabase db = this.getWritableDatabase(); // Abre la base de datos en modo escritura
-        try {
+        // Abre la base de datos en modo escritura
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
             // Elimina el informe con el ID especificado
             db.delete(TABLE_REPORTS, COLUMN_ID + " = ?", new String[]{String.valueOf(reportId)});
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Log.e("DBError", "Error al eliminar el informe: " + e.getMessage());
             throw e; // Vuelve a lanzar la excepción si es necesario
-        } finally {
-            db.close(); // Asegúrate de cerrar la base de datos
         }
+        // Asegúrate de cerrar la base de datos
     }
 
     // Método para agregar un informe diario

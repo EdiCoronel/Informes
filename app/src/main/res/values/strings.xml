@@ -5,7 +5,7 @@
         <item>Administrador</item>
     </string-array>
     <string name="app_name">informes</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">Reportes</string>
     <string name="prompt_email">Usuario</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Entrar</string>
