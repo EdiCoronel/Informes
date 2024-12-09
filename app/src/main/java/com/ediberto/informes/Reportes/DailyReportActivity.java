@@ -17,11 +17,13 @@ import androidx.appcompat.widget.Toolbar;
 import android.provider.MediaStore;
 import com.ediberto.informes.BasedeDatos.DailyReportDatabaseHelper;
 import com.ediberto.informes.R;
+import android.app.TimePickerDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -70,6 +72,22 @@ public class DailyReportActivity extends AppCompatActivity {
         // Establecer la fecha actual
         String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         dateTextView.setText(currentDate);
+
+        // Configurar el TimePickerDialog para startTimeEditText
+        startTimeEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog(startTimeEditText);
+            }
+        });
+
+        // Configurar el TimePickerDialog para endTimeEditText
+        endTimeEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog(endTimeEditText);
+            }
+        });
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +138,20 @@ public class DailyReportActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void showTimePickerDialog(final EditText editText) {
+        final Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                (view, selectedHour, selectedMinute) -> {
+                    String time = String.format("%02d:%02d", selectedHour, selectedMinute);
+                    editText.setText(time);
+                }, hour, minute, true);
+        timePickerDialog.show();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
