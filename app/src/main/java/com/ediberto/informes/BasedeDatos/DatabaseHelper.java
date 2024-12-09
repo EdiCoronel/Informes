@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.ediberto.informes.Login.User;
 
@@ -27,7 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "name TEXT, " +
                 "email TEXT, " +
                 "password TEXT, " +
-                "access_level TEXT)";
+                "access_level TEXT" +
+                ")";
         db.execSQL(CREATE_USERS_TABLE);
 
         // Agrega un usuario administrador predeterminado
@@ -47,22 +49,36 @@ public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     // Método para agregar un usuario administrador predeterminado
     private void addDefaultAdminUser(SQLiteDatabase db) {
-        // Verifica si ya existe un usuario con nivel de acceso 'Administrador'
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE access_level = ?",
-                new String[]{"Administrador"});
-        if (cursor.moveToFirst()) {
-            cursor.close(); // Si existe, no hacer nada
-            return;
-        }
-        cursor.close();
+        Cursor cursor = null;
+        try {
+            // Verifica si ya existe un usuario con nivel de acceso 'Administrador'
+            cursor = db.rawQuery("SELECT 1 FROM " + TABLE_USERS + " WHERE access_level = ? LIMIT 1",
+                    new String[]{"Administrador"});
+            if (cursor.moveToFirst()) {
+                Log.d("Database", "El usuario administrador ya existe");
+                return;
+            }
 
-        // Insertar el usuario administrador si no existe
-        ContentValues adminUser = new ContentValues();
-        adminUser.put("name", "admin");
-        adminUser.put("email", "admin@example.com");
-        adminUser.put("password", "admin123"); // Usa un hash seguro en producción
-        adminUser.put("access_level", "Administrador");
-        db.insert(TABLE_USERS, null, adminUser);
+            // Insertar el usuario administrador si no existe
+            ContentValues adminUser = new ContentValues();
+            adminUser.put("name", "admin");
+            adminUser.put("email", "admin@example.com");
+            adminUser.put("password", "admin123"); // Usa un hash seguro en producción
+            adminUser.put("access_level", "Administrador");
+
+            long result = db.insert(TABLE_USERS, null, adminUser);
+            if (result == -1) {
+                Log.e("Database", "Error al insertar el usuario administrador");
+            } else {
+                Log.d("Database", "Usuario administrador insertado con ID: " + result);
+            }
+        } catch (Exception e) {
+            Log.e("Database", "Error en addDefaultAdminUser: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     public boolean checkUser(String name, String password) {
